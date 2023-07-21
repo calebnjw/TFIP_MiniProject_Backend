@@ -1,19 +1,28 @@
 package tfip.miniproject.backend.models;
 
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
 public class User {
   private String user_id;
   private String username;
-  private String password;
   private String email;
+  private String password;
+  private Profile profile;
 
   public User() {
   }
 
-  public User(String user_id, String username, String password, String email) {
+  public User(String username, String email, String password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
+
+  public User(String user_id, String username, String email, String password) {
     this.user_id = user_id;
     this.username = username;
-    this.password = password;
     this.email = email;
+    this.password = password;
   }
 
   public String getUser_id() {
@@ -32,14 +41,6 @@ public class User {
     this.username = username;
   }
 
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -48,9 +49,26 @@ public class User {
     this.email = email;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getProfile() {
+    return profile.toString();
+  }
+
+  public void setProfile(Profile profile) {
+    this.profile = profile;
+  }
+
   @Override
   public String toString() {
-    return "User [user_id=" + user_id + ", username=" + username + ", password=" + password + ", email=" + email + "]";
+    return "User [user_id=" + user_id + ", username=" + username + ", email=" + email + ", password=" + password
+        + ", profile=" + profile.toString() + "]";
   }
 
   @Override
@@ -76,6 +94,17 @@ public class User {
     } else if (!password.equals(other.password))
       return false;
     return true;
+  }
+
+  public static User createUserObject(SqlRowSet rs) {
+    User user = new User();
+
+    user.setUser_id(rs.getString("id"));
+    user.setUsername(rs.getString("username"));
+    user.setEmail(rs.getString("email"));
+    user.setPassword(rs.getString("password"));
+
+    return user;
   }
 
 }

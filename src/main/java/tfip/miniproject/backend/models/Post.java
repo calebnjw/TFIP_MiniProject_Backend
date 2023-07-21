@@ -2,20 +2,30 @@ package tfip.miniproject.backend.models;
 
 import java.util.Date;
 
-public class Posts {
+public class Post {
+  private String user_id;
   private String post_id;
   private Date post_date;
   private String post_content;
   private String image_url;
 
-  public Posts() {
+  public Post() {
   }
 
-  public Posts(String post_id, Date post_date, String post_content, String image_url) {
+  public Post(String user_id, String post_id, Date post_date, String post_content, String image_url) {
+    this.user_id = user_id;
     this.post_id = post_id;
     this.post_date = post_date;
     this.post_content = post_content;
     this.image_url = image_url;
+  }
+
+  public String getUser_id() {
+    return user_id;
+  }
+
+  public void setUser_id(String user_id) {
+    this.user_id = user_id;
   }
 
   public String getPost_id() {
@@ -52,7 +62,7 @@ public class Posts {
 
   @Override
   public String toString() {
-    return "Posts [post_id=" + post_id + ", post_date=" + post_date + ", post_content=" + post_content + ", image_url="
-        + image_url + "]";
+    return "Post [user_id=" + user_id + ", post_id=" + post_id + ", post_date=" + post_date + ", post_content="
+        + post_content + ", image_url=" + image_url + "]";
   }
 }
