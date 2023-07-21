@@ -17,15 +17,15 @@ create table users (
 	primary key(id)
 );
 
-select "Creating profile table" as "";
+select "Creating profiles table" as "";
 
-create table profile (
+create table profiles (
   id int not null unique auto_increment,
   user_id char(8), 
-  display_name varchar(255) not null,
-  status_message varchar(255),
-  user_location varchar(255),
-  profile_img varchar(255),
+  display_name varchar(255) default "",
+  status_message varchar(255) default "",
+  user_location varchar(255) default "",
+  profile_img varchar(255) default "",
 
   primary key(id),
   foreign key (user_id) 
@@ -36,10 +36,10 @@ select "Creating posts table" as "";
 
 create table posts (
   id char(8) not null unique,
-  user_id int,
-  post_date date not null,
+  user_id char(8),
+  post_date date not null default (current_date),
   post_content varchar(255) not null,
-  image_url varchar(512),
+  image_url varchar(512) default "",
   
   primary key(id),
   foreign key (user_id) 

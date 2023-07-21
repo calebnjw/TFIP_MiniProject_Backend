@@ -1,5 +1,8 @@
 package tfip.miniproject.backend.models;
 
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
+
 public class Profile {
   private String user_id;
   private String display_name;
@@ -57,6 +60,15 @@ public class Profile {
 
   public void setProfile_img(String profile_img) {
     this.profile_img = profile_img;
+  }
+
+  public JsonValue toJson() {
+    return Json.createObjectBuilder()
+        .add("display_name", this.getDisplay_name())
+        .add("status_message", this.getStatus_message())
+        .add("user_location", this.getUser_location())
+        .add("profile_img", this.getProfile_img())
+        .build();
   }
 
   @Override

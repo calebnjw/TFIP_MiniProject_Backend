@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,9 +22,9 @@ public class PostController {
   @Autowired
   public PostRepository postRepository;
 
-  @GetMapping(path = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/find/{post_id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public ResponseEntity<String> getPost() {
+  public ResponseEntity<String> getPost(@RequestParam String post_id) {
     return null;
   }
 

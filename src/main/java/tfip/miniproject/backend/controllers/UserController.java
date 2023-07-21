@@ -63,21 +63,22 @@ public class UserController {
   @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public ResponseEntity<String> loginUser(@RequestBody String payload) {
-    System.out.println("CREATING USER");
+    System.out.println("CREATING USER OBJECT");
     JsonObject jsonObject = Json.createReader(new StringReader(payload)).readObject();
 
+    // userlogin stuff
     User user = new User(
         jsonObject.getString("username"),
-        jsonObject.getString("email"),
         jsonObject.getString("password"));
-    Boolean userCreated = userService.createUser(user);
+    User verifiedUser = userService.loginUser(user);
 
-    if (userCreated) {
+    if (verifiedUser != null) {
       return ResponseEntity.status(HttpStatus.ACCEPTED)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
               Json.createObjectBuilder()
-                  .add("userCreated", userCreated)
+                  .add("userLogin", true)
+                  .add("user", verifiedUser.toJson())
                   .build().toString());
 
     } else {
@@ -85,7 +86,7 @@ public class UserController {
           .contentType(MediaType.APPLICATION_JSON)
           .body(
               Json.createObjectBuilder()
-                  .add("error", "USERNAME OR EMAIL IS ALREADY IN USE.")
+                  .add("error", "INVALID USERNAME OR PASSWORD.")
                   .build().toString());
     }
   }
@@ -93,21 +94,22 @@ public class UserController {
   @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public ResponseEntity<String> createUser(@RequestBody String payload) {
-    System.out.println("CREATING USER");
+    System.out.println("CREATING USER OBJECT");
     JsonObject jsonObject = Json.createReader(new StringReader(payload)).readObject();
 
     User user = new User(
         jsonObject.getString("username"),
         jsonObject.getString("email"),
         jsonObject.getString("password"));
-    Boolean userCreated = userService.createUser(user);
+    User userCreated = userService.createUser(user);
 
-    if (userCreated) {
+    if (userCreated != null) {
       return ResponseEntity.status(HttpStatus.ACCEPTED)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
               Json.createObjectBuilder()
-                  .add("userCreated", userCreated)
+                  .add("userLogin", true)
+                  .add("user", userCreated.toJson())
                   .build().toString());
 
     } else {

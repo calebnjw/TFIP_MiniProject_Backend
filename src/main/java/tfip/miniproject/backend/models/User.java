@@ -2,14 +2,22 @@ package tfip.miniproject.backend.models;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
+
 public class User {
   private String user_id;
   private String username;
   private String email;
   private String password;
-  private Profile profile;
+  private Profile profile = new Profile();
 
   public User() {
+  }
+
+  public User(String username, String password) {
+    this.username = username;
+    this.password = password;
   }
 
   public User(String username, String email, String password) {
@@ -57,18 +65,37 @@ public class User {
     this.password = password;
   }
 
-  public String getProfile() {
-    return profile.toString();
+  public Profile getProfile() {
+    return profile;
   }
 
   public void setProfile(Profile profile) {
     this.profile = profile;
   }
 
+  public static User createUserObject(SqlRowSet rs) {
+    User user = new User();
+
+    user.setUser_id(rs.getString("id"));
+    user.setUsername(rs.getString("username"));
+    user.setEmail(rs.getString("email"));
+    user.setPassword(rs.getString("password"));
+
+    return user;
+  }
+
+  public JsonValue toJson() {
+    return Json.createObjectBuilder()
+        .add("username", this.getUsername())
+        .add("email", this.getEmail())
+        .add("profile", this.getProfile().toJson())
+        .build();
+  }
+
   @Override
   public String toString() {
     return "User [user_id=" + user_id + ", username=" + username + ", email=" + email + ", password=" + password
-        + ", profile=" + profile.toString() + "]";
+        + ", profile=" + (profile == null ? "empty profile" : profile.toString()) + "]";
   }
 
   @Override
@@ -95,16 +122,4 @@ public class User {
       return false;
     return true;
   }
-
-  public static User createUserObject(SqlRowSet rs) {
-    User user = new User();
-
-    user.setUser_id(rs.getString("id"));
-    user.setUsername(rs.getString("username"));
-    user.setEmail(rs.getString("email"));
-    user.setPassword(rs.getString("password"));
-
-    return user;
-  }
-
 }

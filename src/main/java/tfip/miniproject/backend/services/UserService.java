@@ -15,7 +15,7 @@ public class UserService {
   @Autowired
   private UserRepository userRepository;
 
-  public boolean createUser(User user) {
+  public User createUser(User user) {
     // check for existing user
     String username = user.getUsername();
     String email = user.getEmail();
@@ -23,19 +23,25 @@ public class UserService {
     if (checkUsernameExist(username) || checkEmailExist(email)) {
       // failed to create user
       System.out.println("USERNAME OR EMAIL ALREADY IN USE.");
-      return false;
+      return null;
     }
 
+    System.out.println("CREATING NEW USER...");
     String user_id = UUID.randomUUID().toString().substring(0, 8);
     user.setUser_id(user_id);
-
-    System.out.println("CREATING NEW USER...");
     Boolean userCreated = userRepository.createUser(user);
     System.out.println("USER CREATED: " + userCreated);
     Boolean profileCreated = userRepository.createProfile(user_id);
     System.out.println("PROFILE CREATED: " + profileCreated);
 
-    return (userCreated && profileCreated);
+    if (userCreated && profileCreated) {
+      Profile userProfile = findProfile(username);
+      user.setProfile(userProfile);
+      System.out.println("UPDATED PROFILE: " + user.getProfile());
+      return user;
+    }
+
+    return null;
   }
 
   public User loginUser(User user) {
@@ -43,24 +49,31 @@ public class UserService {
     String password = user.getPassword();
 
     User userLookup = findUser(username);
-    if (userLookup.getPassword() == password) {
+    if (userLookup.getPassword().equalsIgnoreCase(password)) {
+      System.out.println("USER FOUND.");
       System.out.println("USERNAME AND PASSWORD MATCH.");
+
       // look for user and profile information
+      Profile userProfile = findProfile(username);
 
       // then update user object
       user.setUser_id(userLookup.getUser_id());
       user.setEmail(userLookup.getEmail());
-      user.setProfile();
+      user.setPassword("");
+      user.setProfile(userProfile);
+      System.out.println("UPDATED PROFILE: " + user.getProfile());
 
       // return user object
+      return user;
+    } else {
+      return null;
     }
 
-    return user;
   }
 
   // utilities
-  public Profile findProfile(String user_id) {
-    Profile profile = userRepository.findProfile(user_id);
+  public Profile findProfile(String username) {
+    Profile profile = userRepository.findProfile(username);
     return profile;
   }
 
