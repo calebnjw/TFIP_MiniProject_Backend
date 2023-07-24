@@ -81,14 +81,14 @@ public class UserController {
                   .add("user", verifiedUser.toJson())
                   .build().toString());
 
-    } else {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(
-              Json.createObjectBuilder()
-                  .add("error", "INVALID USERNAME OR PASSWORD.")
-                  .build().toString());
     }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(
+            Json.createObjectBuilder()
+                .add("error", "INVALID USERNAME OR PASSWORD.")
+                .build().toString());
   }
 
   @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -112,14 +112,14 @@ public class UserController {
                   .add("user", userCreated.toJson())
                   .build().toString());
 
-    } else {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(
-              Json.createObjectBuilder()
-                  .add("error", "USERNAME OR EMAIL IS ALREADY IN USE.")
-                  .build().toString());
     }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(
+            Json.createObjectBuilder()
+                .add("error", "USERNAME OR EMAIL IS ALREADY IN USE.")
+                .build().toString());
   }
 
   @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
