@@ -44,30 +44,26 @@ public class PostController {
       @RequestParam(required = false, defaultValue = "false") Boolean feed,
       @RequestParam String userId) {
     System.out.println("PULLING POSTS");
-    System.out.println("FOR FEED: " + feed);
-    System.out.println("USER ID: " + userId);
-
     List<Post> posts = new LinkedList<Post>();
 
-    if (feed) {
-      System.out.println("CONTROLLER: FINDING POSTS...");
-      posts = this.postService.getPosts(userId);
-      System.out.println("POSTS FOUND: " + posts);
-    } else {
-      System.out.println("CONTROLLER: FINDING POSTS...");
-      posts = this.postService.getPosts(userId);
-      System.out.println("POSTS FOUND: " + posts);
-    }
+    posts = this.postService.getPosts(userId);
+    // System.out.println("POSTS FOUND: " + posts);
+    // if (feed) {
+    // posts = this.postService.getPosts(userId);
+    // } else {
+    // posts = this.postService.getPosts(userId);
+    // }
 
     if (posts != null && posts.size() > 0) {
       JsonArrayBuilder postArray = Json.createArrayBuilder();
       posts.forEach(post -> {
+        System.out.println(post);
         postArray.add(Json.createObjectBuilder()
-            .add("userId", post.getUser_id())
-            .add("postId", post.getPost_id())
-            .add("date", post.getPost_date().toString())
-            .add("postContent", post.getPost_content())
-            .add("imageUrl", post.getImage_url())
+            .add("user_id", post.getUser_id())
+            .add("post_id", post.getPost_id())
+            .add("post_date", post.getPost_date().toString())
+            .add("post_content", post.getPost_content())
+            .add("image_url", post.getImage_url())
             .build());
       });
 

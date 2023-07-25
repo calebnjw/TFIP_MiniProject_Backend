@@ -37,7 +37,7 @@ select "Creating posts table" as "";
 create table posts (
   id char(8) not null unique,
   user_id char(8),
-  post_date date not null default (current_date),
+  post_date datetime not null default (now()),
   post_content varchar(255) not null,
   image_url varchar(512) default "",
   

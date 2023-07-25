@@ -28,6 +28,7 @@ public class PostService {
   }
 
   public boolean createPost(String userId, String post_content) {
+    System.out.println("CREATING NEW POST...");
     String postId = UUID.randomUUID().toString().substring(0, 8);
 
     Post post = new Post();
@@ -35,7 +36,6 @@ public class PostService {
     post.setPost_id(postId);
     post.setPost_content(post_content);
 
-    System.out.println("CREATING NEW POST...");
     Boolean postCreated = postRepository.createPost(userId, post);
     System.out.println("POST CREATED: " + postCreated);
 
@@ -43,11 +43,10 @@ public class PostService {
   }
 
   public List<Post> getPosts(String userId) {
+    System.out.println("FINDING POSTS...");
     List<Post> posts = new LinkedList<Post>();
-    System.out.println("SERVICE: FINDING POSTS...");
-    posts = postRepository.getPostsByUser(userId);
-    System.out.println("SERVICE: POSTS FOUND: " + posts);
 
+    posts = postRepository.getPostsByUser(userId);
     if (posts != null) {
       return posts;
     }

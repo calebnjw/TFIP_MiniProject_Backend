@@ -20,14 +20,14 @@ public class PostRepository {
     try {
       List<Post> posts = jdbcTemplate.query(
           PostQueries.FIND_POSTS,
-          new PostRowMapper());
+          new PostRowMapper(),
+          userId);
 
-      System.out.println("REPOSITORY: POSTS FOUND: " + posts);
       return posts;
     } catch (Exception e) {
       // user does not exist
-      System.out.println("REPOSITORY: C0ULD NOT FIND POSTS");
-      System.out.println(e);
+      System.out.println(e.getMessage());
+      e.printStackTrace();
       return null;
     }
   }

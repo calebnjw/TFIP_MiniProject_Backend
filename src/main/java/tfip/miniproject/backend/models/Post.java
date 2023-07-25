@@ -1,18 +1,18 @@
 package tfip.miniproject.backend.models;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Post {
   private String user_id;
   private String post_id;
-  private Date post_date;
+  private LocalDateTime post_date;
   private String post_content;
   private String image_url;
 
   public Post() {
   }
 
-  public Post(String user_id, String post_id, Date post_date, String post_content, String image_url) {
+  public Post(String user_id, String post_id, LocalDateTime post_date, String post_content, String image_url) {
     this.user_id = user_id;
     this.post_id = post_id;
     this.post_date = post_date;
@@ -36,11 +36,11 @@ public class Post {
     this.post_id = post_id;
   }
 
-  public Date getPost_date() {
+  public LocalDateTime getPost_date() {
     return post_date;
   }
 
-  public void setPost_date(Date post_date) {
+  public void setPost_date(LocalDateTime post_date) {
     this.post_date = post_date;
   }
 
