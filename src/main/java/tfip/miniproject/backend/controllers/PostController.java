@@ -1,5 +1,8 @@
 package tfip.miniproject.backend.controllers;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import tfip.miniproject.backend.models.Post;
 import tfip.miniproject.backend.services.PostService;
 
 @RestController
@@ -28,32 +34,68 @@ public class PostController {
 
   @GetMapping(path = "/find/{post_id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public ResponseEntity<String> getPost(@RequestParam String post_id) {
+  public ResponseEntity<String> getPost(@PathVariable String post_id) {
     return null;
   }
 
-  @GetMapping(path = "/find/all", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public ResponseEntity<String> getAllPosts() {
+  public ResponseEntity<String> getAllPosts(
+      @RequestParam(required = false, defaultValue = "false") Boolean feed,
+      @RequestParam String userId) {
     System.out.println("PULLING POSTS");
+    System.out.println("FOR FEED: " + feed);
+    System.out.println("USER ID: " + userId);
 
-    // TODO:
-    // call post service to find all posts
+    List<Post> posts = new LinkedList<Post>();
 
-    return ResponseEntity.status(HttpStatus.ACCEPTED)
+    if (feed) {
+      System.out.println("CONTROLLER: FINDING POSTS...");
+      posts = this.postService.getPosts(userId);
+      System.out.println("POSTS FOUND: " + posts);
+    } else {
+      System.out.println("CONTROLLER: FINDING POSTS...");
+      posts = this.postService.getPosts(userId);
+      System.out.println("POSTS FOUND: " + posts);
+    }
+
+    if (posts != null && posts.size() > 0) {
+      JsonArrayBuilder postArray = Json.createArrayBuilder();
+      posts.forEach(post -> {
+        postArray.add(Json.createObjectBuilder()
+            .add("userId", post.getUser_id())
+            .add("postId", post.getPost_id())
+            .add("date", post.getPost_date().toString())
+            .add("postContent", post.getPost_content())
+            .add("imageUrl", post.getImage_url())
+            .build());
+      });
+
+      return ResponseEntity.status(HttpStatus.ACCEPTED)
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(
+              Json.createObjectBuilder()
+                  .add("posts", postArray)
+                  .build().toString());
+    }
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             Json.createObjectBuilder()
-                .add("postCreated", true)
+                .add("error", "NO POSTS FOUND.")
                 .build().toString());
   }
 
   @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public ResponseEntity<String> createPost(
-      @RequestPart(required = true) String post_content, @RequestPart(required = false) MultipartFile image) {
+      @RequestPart(required = true) String user_id,
+      @RequestPart(required = true) String post_content,
+      @RequestPart(required = false) MultipartFile image) {
     System.out.println("CREATING POST OBJECT");
 
+    String userId = user_id;
     String postContent = post_content;
     MultipartFile postImage = image;
 
@@ -68,7 +110,9 @@ public class PostController {
     // then take url from s3 and save it to post table with post data
 
     if (image == null) {
-      postCreated = postService.createPost();
+      postCreated = postService.createPost(userId, postContent);
+    } else {
+      System.out.println("still need to work on this.");
     }
 
     if (postCreated) {

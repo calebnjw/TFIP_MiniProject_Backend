@@ -16,25 +16,43 @@ public class PostRepository {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public List<Post> getPostsByUser(String user_id) {
+  public List<Post> getPostsByUser(String userId) {
     try {
       List<Post> posts = jdbcTemplate.query(
           PostQueries.FIND_POSTS,
-          new PostRowMapper(),
-          user_id);
+          new PostRowMapper());
 
+      System.out.println("REPOSITORY: POSTS FOUND: " + posts);
       return posts;
     } catch (Exception e) {
       // user does not exist
+      System.out.println("REPOSITORY: C0ULD NOT FIND POSTS");
+      System.out.println(e);
       return null;
     }
   }
 
-  public Boolean createPost(String user_id, Post post, MultipartFile image) {
+  public Boolean createPost(String userId, Post post) {
     try {
       Integer postRowsUpdated = jdbcTemplate.update(
-          PostQueries.CREATE_POST,
-          user_id,
+          PostQueries.CREATE_TEXT_POST,
+          userId,
+          post.getPost_id(),
+          post.getPost_content());
+
+      return (postRowsUpdated == 1);
+    } catch (Exception e) {
+      // user does not exist
+      System.out.println(e.getMessage());
+      return false;
+    }
+  }
+
+  public Boolean createPost(String userId, Post post, MultipartFile image) {
+    try {
+      Integer postRowsUpdated = jdbcTemplate.update(
+          PostQueries.CREATE_IMAGE_POST,
+          userId,
           post.getPost_id(),
           post.getPost_content()
       // (post.getImage_url() == null ? "" : post.getImage_url())
@@ -48,28 +66,12 @@ public class PostRepository {
     }
   }
 
-  public Boolean createPost(String user_id, Post post) {
-    try {
-      Integer postRowsUpdated = jdbcTemplate.update(
-          PostQueries.CREATE_POST,
-          user_id,
-          post.getPost_id(),
-          post.getPost_content());
-
-      return (postRowsUpdated == 1);
-    } catch (Exception e) {
-      // user does not exist
-      System.out.println(e.getMessage());
-      return false;
-    }
-  }
-
-  public Boolean deletePost(String user_id, String post_id) {
+  public Boolean deletePost(String userId, String post_id) {
     try {
       List<Post> posts = jdbcTemplate.query(
           PostQueries.VERIFY_DELETE,
           new PostRowMapper(),
-          user_id,
+          userId,
           post_id);
       // check that only one post is getting deleted
       if (posts.size() > 1) {
@@ -78,7 +80,7 @@ public class PostRepository {
 
       Integer postRowsUpdated = jdbcTemplate.update(
           PostQueries.DELETE_POST,
-          user_id,
+          userId,
           post_id);
 
       return (postRowsUpdated == 1);

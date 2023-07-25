@@ -1,6 +1,8 @@
 package tfip.miniproject.backend.services;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +20,38 @@ public class PostService {
   private PostRepository postRepository;
 
   @Transactional(rollbackFor = IOException.class)
-  public boolean createPost(String user_id, Post post, MultipartFile image) {
+  public boolean createPost(String userId, Post post, MultipartFile image) {
 
     System.out.println("still need to work on this.");
 
     return false;
   }
 
-  public boolean createPost(String user_id, Post post) {
-    String post_id = UUID.randomUUID().toString().substring(0, 8);
-    post.setPost_id(post_id);
+  public boolean createPost(String userId, String post_content) {
+    String postId = UUID.randomUUID().toString().substring(0, 8);
+
+    Post post = new Post();
+    post.setUser_id(userId);
+    post.setPost_id(postId);
+    post.setPost_content(post_content);
 
     System.out.println("CREATING NEW POST...");
-    Boolean postCreated = postRepository.createPost(user_id, post);
+    Boolean postCreated = postRepository.createPost(userId, post);
     System.out.println("POST CREATED: " + postCreated);
 
     return (postCreated);
   }
 
-  public boolean createTextPost() {
-    return true;
-  }
+  public List<Post> getPosts(String userId) {
+    List<Post> posts = new LinkedList<Post>();
+    System.out.println("SERVICE: FINDING POSTS...");
+    posts = postRepository.getPostsByUser(userId);
+    System.out.println("SERVICE: POSTS FOUND: " + posts);
 
-  public boolean createImagePost() {
-    return true;
+    if (posts != null) {
+      return posts;
+    }
+
+    return null;
   }
 }

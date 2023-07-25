@@ -27,17 +27,16 @@ public class UserService {
     }
 
     System.out.println("CREATING NEW USER...");
-    String user_id = UUID.randomUUID().toString().substring(0, 8);
-    user.setUser_id(user_id);
+    String userId = UUID.randomUUID().toString().substring(0, 8);
+    user.setUser_id(userId);
     Boolean userCreated = userRepository.createUser(user);
     System.out.println("USER CREATED: " + userCreated);
-    Boolean profileCreated = userRepository.createProfile(user_id);
+    Boolean profileCreated = userRepository.createProfile(userId);
     System.out.println("PROFILE CREATED: " + profileCreated);
 
     if (userCreated && profileCreated) {
       Profile userProfile = findProfile(username);
       user.setProfile(userProfile);
-      System.out.println("UPDATED PROFILE: " + user.getProfile());
       return user;
     }
 
@@ -61,6 +60,7 @@ public class UserService {
       user.setEmail(userLookup.getEmail());
       user.setPassword("");
       user.setProfile(userProfile);
+      System.out.println("USER: " + user.toString());
       System.out.println("UPDATED PROFILE: " + user.getProfile());
 
       // return user object

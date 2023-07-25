@@ -86,6 +86,7 @@ public class User {
 
   public JsonValue toJson() {
     return Json.createObjectBuilder()
+        .add("userId", this.getUser_id())
         .add("username", this.getUsername())
         .add("email", this.getEmail())
         .add("profile", this.getProfile().toJson())
