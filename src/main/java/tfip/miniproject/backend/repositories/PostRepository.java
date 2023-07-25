@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import tfip.miniproject.backend.mappers.PostRowMapper;
 import tfip.miniproject.backend.models.Post;
@@ -29,14 +30,31 @@ public class PostRepository {
     }
   }
 
+  public Boolean createPost(String user_id, Post post, MultipartFile image) {
+    try {
+      Integer postRowsUpdated = jdbcTemplate.update(
+          PostQueries.CREATE_POST,
+          user_id,
+          post.getPost_id(),
+          post.getPost_content()
+      // (post.getImage_url() == null ? "" : post.getImage_url())
+      );
+
+      return (postRowsUpdated == 1);
+    } catch (Exception e) {
+      // user does not exist
+      System.out.println(e.getMessage());
+      return false;
+    }
+  }
+
   public Boolean createPost(String user_id, Post post) {
     try {
       Integer postRowsUpdated = jdbcTemplate.update(
           PostQueries.CREATE_POST,
           user_id,
           post.getPost_id(),
-          post.getPost_content(),
-          (post.getImage_url() == null ? "" : post.getImage_url()));
+          post.getPost_content());
 
       return (postRowsUpdated == 1);
     } catch (Exception e) {
