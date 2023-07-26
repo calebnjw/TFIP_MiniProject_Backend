@@ -3,7 +3,7 @@ package tfip.miniproject.backend.repositories;
 public class PostQueries {
 
   // select queries
-  public static final String FIND_POSTS = "SELECT * FROM posts WHERE user_id = ? ORDER BY post_date ASC";
+  public static final String FIND_POSTS = "SELECT * FROM posts WHERE user_id = ? ORDER BY post_date DESC";
   public static final String VERIFY_DELETE = "SELECT * FROM posts WHERE user_id = ? AND id = ?";
 
   // insert queries
