@@ -43,7 +43,7 @@ public class PostService {
   }
 
   public Post getSinglePost(String postId) {
-    System.out.println("FINDING POSTS...");
+    System.out.println("FINDING ONE POST: " + postId);
     Post post = new Post();
 
     post = postRepository.getSinglePost(postId);

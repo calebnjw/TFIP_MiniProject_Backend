@@ -39,19 +39,14 @@ public class PostController {
     Post post = new Post();
 
     post = this.postService.getSinglePost(postId);
-    System.out.println(post);
 
     if (post != null) {
-
+      System.out.println("POST FOUND: " + post);
       return ResponseEntity.status(HttpStatus.ACCEPTED)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
               Json.createObjectBuilder()
-                  .add("user_id", post.getUser_id())
-                  .add("post_id", post.getPost_id())
-                  .add("post_date", post.getPost_date().toString())
-                  .add("post_content", post.getPost_content())
-                  .add("image_url", post.getImage_url())
+                  .add("post", post.toJson())
                   .build().toString());
     }
 
@@ -59,11 +54,11 @@ public class PostController {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             Json.createObjectBuilder()
-                .add("error", "NO POSTS FOUND.")
+                .add("error", "POST NOT FOUND.")
                 .build().toString());
   }
 
-  @GetMapping(path = "/feed", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/find/feed", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public ResponseEntity<String> getAllPosts(
       @RequestParam(required = false, defaultValue = "false") Boolean feed,
@@ -77,13 +72,7 @@ public class PostController {
       JsonArrayBuilder postArray = Json.createArrayBuilder();
       posts.forEach(post -> {
         System.out.println(post);
-        postArray.add(Json.createObjectBuilder()
-            .add("user_id", post.getUser_id())
-            .add("post_id", post.getPost_id())
-            .add("post_date", post.getPost_date().toString())
-            .add("post_content", post.getPost_content())
-            .add("image_url", post.getImage_url())
-            .build());
+        postArray.add(post.toJson());
       });
 
       return ResponseEntity.status(HttpStatus.ACCEPTED)

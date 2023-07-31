@@ -2,6 +2,9 @@ package tfip.miniproject.backend.models;
 
 import java.time.LocalDateTime;
 
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
+
 public class Post {
   private String user_id;
   private String post_id;
@@ -58,6 +61,16 @@ public class Post {
 
   public void setImage_url(String image_url) {
     this.image_url = image_url;
+  }
+
+  public JsonValue toJson() {
+    return Json.createObjectBuilder()
+        .add("userId", this.getUser_id())
+        .add("postId", this.getPost_id())
+        .add("postDate", this.getPost_date().toString())
+        .add("postContent", this.getPost_content())
+        .add("imageUrl", this.getImage_url())
+        .build();
   }
 
   @Override
