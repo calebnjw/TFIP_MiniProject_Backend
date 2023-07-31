@@ -32,6 +32,22 @@ public class PostRepository {
     }
   }
 
+  public Post getSinglePost(String postId) {
+    try {
+      Post post = jdbcTemplate.queryForObject(
+          PostQueries.FIND_SINGLE_POST,
+          new PostRowMapper(),
+          postId);
+
+      return post;
+    } catch (Exception e) {
+      // user does not exist
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public Boolean createPost(String userId, Post post) {
     try {
       Integer postRowsUpdated = jdbcTemplate.update(
@@ -66,13 +82,13 @@ public class PostRepository {
     }
   }
 
-  public Boolean deletePost(String userId, String post_id) {
+  public Boolean deletePost(String userId, String postId) {
     try {
       List<Post> posts = jdbcTemplate.query(
           PostQueries.VERIFY_DELETE,
           new PostRowMapper(),
           userId,
-          post_id);
+          postId);
       // check that only one post is getting deleted
       if (posts.size() > 1) {
         return false;
@@ -81,7 +97,7 @@ public class PostRepository {
       Integer postRowsUpdated = jdbcTemplate.update(
           PostQueries.DELETE_POST,
           userId,
-          post_id);
+          postId);
 
       return (postRowsUpdated == 1);
     } catch (Exception e) {

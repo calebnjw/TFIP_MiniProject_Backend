@@ -42,6 +42,18 @@ public class PostService {
     return (postCreated);
   }
 
+  public Post getSinglePost(String postId) {
+    System.out.println("FINDING POSTS...");
+    Post post = new Post();
+
+    post = postRepository.getSinglePost(postId);
+    if (post != null) {
+      return post;
+    }
+
+    return null;
+  }
+
   public List<Post> getPosts(String userId) {
     System.out.println("FINDING POSTS...");
     List<Post> posts = new LinkedList<Post>();

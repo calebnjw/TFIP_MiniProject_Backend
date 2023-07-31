@@ -44,7 +44,7 @@ public class UserRepository {
 
   public User findUser(String username) {
     try {
-      User user = jdbcTemplate.queryForObject(UserQueries.FIND_USER, new UserRowMapper(), new Object[] { username });
+      User user = jdbcTemplate.queryForObject(UserQueries.FIND_USER, new UserRowMapper(), username);
       return user;
     } catch (Exception e) {
       // user does not exist
@@ -55,7 +55,7 @@ public class UserRepository {
 
   public User findEmail(String email) {
     try {
-      User user = jdbcTemplate.queryForObject(UserQueries.FIND_EMAIL, new UserRowMapper(), new Object[] { email });
+      User user = jdbcTemplate.queryForObject(UserQueries.FIND_EMAIL, new UserRowMapper(), email);
       return user;
     } catch (Exception e) {
       // user does not exist
@@ -67,7 +67,7 @@ public class UserRepository {
   public Profile findProfile(String username) {
     try {
       Profile profile = jdbcTemplate.queryForObject(UserQueries.FIND_PROFILE, new ProfileRowMapper(),
-          new Object[] { username });
+          username);
       return profile;
     } catch (Exception e) {
       // user does not exist

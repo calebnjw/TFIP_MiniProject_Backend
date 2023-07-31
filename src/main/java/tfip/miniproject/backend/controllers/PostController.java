@@ -32,13 +32,38 @@ public class PostController {
   @Autowired
   public PostService postService;
 
-  @GetMapping(path = "/find/{post_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/find/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public ResponseEntity<String> getPost(@PathVariable String post_id) {
-    return null;
+  public ResponseEntity<String> getSinglePost(@PathVariable String postId) {
+    System.out.println("PULLING SINGLE POST");
+    Post post = new Post();
+
+    post = this.postService.getSinglePost(postId);
+    System.out.println(post);
+
+    if (post != null) {
+
+      return ResponseEntity.status(HttpStatus.ACCEPTED)
+          .contentType(MediaType.APPLICATION_JSON)
+          .body(
+              Json.createObjectBuilder()
+                  .add("user_id", post.getUser_id())
+                  .add("post_id", post.getPost_id())
+                  .add("post_date", post.getPost_date().toString())
+                  .add("post_content", post.getPost_content())
+                  .add("image_url", post.getImage_url())
+                  .build().toString());
+    }
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(
+            Json.createObjectBuilder()
+                .add("error", "NO POSTS FOUND.")
+                .build().toString());
   }
 
-  @GetMapping(path = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/feed", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public ResponseEntity<String> getAllPosts(
       @RequestParam(required = false, defaultValue = "false") Boolean feed,
@@ -47,12 +72,6 @@ public class PostController {
     List<Post> posts = new LinkedList<Post>();
 
     posts = this.postService.getPosts(userId);
-    // System.out.println("POSTS FOUND: " + posts);
-    // if (feed) {
-    // posts = this.postService.getPosts(userId);
-    // } else {
-    // posts = this.postService.getPosts(userId);
-    // }
 
     if (posts != null && posts.size() > 0) {
       JsonArrayBuilder postArray = Json.createArrayBuilder();
